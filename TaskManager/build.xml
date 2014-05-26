@@ -1,10 +1,17 @@
 <project name="folivora" basedir="." default="main">
 
     <property name="src.dir"     value="src"/>
+    <property name="lib.dir"     value="lib"/>
     <property name="classes.dir" value="bin"/>
     <property name="jar.dir"     value="deploy"/>
     <property name="main-class"  value="de.jochenskulj.taskmanager.Application"/>
 
+    <path id="build.path">
+      <fileset dir="${lib.dir}">
+        <include name="**/*.jar" />
+      </fileset>
+    </path>
+  
     <target name="clean">
         <delete dir="${classes.dir}"/>
 	<delete dir="${deploy.dir}"/>
@@ -12,7 +19,7 @@
 
     <target name="compile">
         <mkdir dir="${classes.dir}"/>
-        <javac srcdir="${src.dir}" destdir="${classes.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="build.path"/>
     </target>
 
     <target name="jar" depends="compile">
@@ -24,12 +31,8 @@
         </jar>
     </target>
 
-    <target name="run" depends="jar">
-        <java jar="${jar.dir}/${ant.project.name}.jar" fork="true"/>
-    </target>
-
     <target name="clean-build" depends="clean,jar"/>
 
-    <target name="main" depends="clean,run"/>
+    <target name="main" depends="clean,jar"/>
 
 </project>
