@@ -39,7 +39,8 @@ public abstract class ElementListBase extends AbstractTableModel {
     private ApplicationModel model;
     private ElementType type;
     private ArrayList<String> columnNames;
-    private ArrayList<ElementBase> elements;
+    private ArrayList<ElementBase> allElements;
+    private ArrayList<ElementBase> filteredElements;
     private ArrayList<ApplicationModelListener> listeners;
     private int selectedRow = -1;
     private boolean active = true;
@@ -57,7 +58,8 @@ public abstract class ElementListBase extends AbstractTableModel {
         model = aModel;
         type = aType;
         columnNames = new ArrayList<String>();
-        elements = new ArrayList<ElementBase>();
+        filteredElements = new ArrayList<ElementBase>();
+        allElements = new ArrayList<ElementBase>();
         listeners = new ArrayList<ApplicationModelListener>();
     }
 
@@ -68,7 +70,7 @@ public abstract class ElementListBase extends AbstractTableModel {
      */
     public boolean isModified() {
     	if (!modifiedFlag) {
-    		for (ElementBase element : elements) {
+    		for (ElementBase element : allElements) {
     			if (element.isModified()) {
     				modifiedFlag = true;
     				break;
@@ -93,7 +95,7 @@ public abstract class ElementListBase extends AbstractTableModel {
      * clears the flag that marks the element as modified
      */
     public void clearModified() {
-    	for (ElementBase element : elements) {
+    	for (ElementBase element : allElements) {
     		element.clearModified();
     	}
     	modifiedFlag = false;
@@ -147,6 +149,41 @@ public abstract class ElementListBase extends AbstractTableModel {
     }
     
     /**
+     * applies a filter on the list
+     * @param aFilter
+     *        filter to apply
+     */
+    public void setFilter(ElementFilterBase aFilter) {
+    	
+    	logger.debug("Method entered [" + type + "]");
+    	
+    	filteredElements.removeAll(filteredElements);
+    	for (ElementBase element : allElements) {
+    		if (aFilter.checkElement(element)) {
+    			filteredElements.add(element);
+    		}
+    	}
+    	fireUpdate();
+    	
+    	logger.debug("Method exited [" + type + "]");
+    }
+
+    /**
+     * removes a filter
+     */
+    public void clearFilter() {
+    	
+    	logger.debug("Method entered [" + type + "]");
+
+    	filteredElements.removeAll(filteredElements);
+    	filteredElements.addAll(allElements);
+    	fireUpdate();
+    	
+    	logger.debug("Method exited [" + type + "]");
+    }
+
+    
+    /**
      * adds a column name
      * @param aName
      *        column name
@@ -165,11 +202,12 @@ public abstract class ElementListBase extends AbstractTableModel {
     	logger.debug("Method entered [" + type + "]");
     	logger.debug("anElement: " + anElement.getSelectionLabel());
         
-    	elements.add(anElement);
+    	allElements.add(anElement);
+    	filteredElements.add(anElement);
         setModified();
         anElement.setList(this);
         anElement.register();
-        selectedRow = elements.size() - 1;
+        selectedRow = filteredElements.size() - 1;
     	
         logger.debug("ElementListBase.selectedRow: " + selectedRow);
         
@@ -186,13 +224,29 @@ public abstract class ElementListBase extends AbstractTableModel {
     	logger.debug("Method entered [" + type + "]");
     	logger.debug("ElementListBase.selectedRow: " + selectedRow);
     	
-    	if (selectedRow >= 0 && selectedRow < elements.size()) {
-    		ElementBase selectedElement = elements.get(selectedRow);
+    	if (selectedRow >= 0 && selectedRow < filteredElements.size()) {
+    		
+    		// Remove from filtered list
+    		ElementBase selectedElement = filteredElements.get(selectedRow);
     		selectedElement.unregister();
-    		elements.remove(selectedRow);
+    		filteredElements.remove(selectedRow);
+    		
+    		// Remove from list of all elements
+    		int allIndex = -1;
+    		for (int i = 0; i < allElements.size(); i++) {
+    			ElementBase element = allElements.get(i);
+    			if (element == selectedElement) {
+    				allIndex = i;
+    				break;
+    			}
+    		}
+    		if (allIndex != -1) {
+    			allElements.remove(allIndex);
+    		}
+    		
     		setModified();
-    		if (selectedRow >= elements.size()) {
-    			selectedRow = elements.size() - 1;
+    		if (selectedRow >= filteredElements.size()) {
+    			selectedRow = filteredElements.size() - 1;
     			if (selectedRow < 0) {
     				mode = LIST_MODE;
     			}
@@ -211,10 +265,11 @@ public abstract class ElementListBase extends AbstractTableModel {
     	
     	logger.debug("Method entered [" + type + "]");
     	
-    	for (ElementBase element : elements) {
+    	for (ElementBase element : filteredElements) {
     		element.unregister();
     	}
-    	elements.removeAll(elements);
+    	filteredElements.removeAll(filteredElements);
+    	allElements.removeAll(allElements);
     	selectedRow = -1;
     	mode = LIST_MODE;
     	clearModified();
@@ -274,8 +329,8 @@ public abstract class ElementListBase extends AbstractTableModel {
      */
     public ElementBase getElement(int anIndex) {
     	ElementBase result = null;
-    	if (anIndex >= 0 && anIndex < elements.size()) {
-    		result = elements.get(anIndex);
+    	if (anIndex >= 0 && anIndex < filteredElements.size()) {
+    		result = filteredElements.get(anIndex);
     	}
         return result; 
     }
@@ -285,7 +340,7 @@ public abstract class ElementListBase extends AbstractTableModel {
      * @return collection of elements
      */
     public ArrayList<ElementBase> getElements() {
-    	return elements;
+    	return filteredElements;
     }
 
     /**
@@ -296,8 +351,8 @@ public abstract class ElementListBase extends AbstractTableModel {
      */
     public int getElementIndex(ElementBase anElement) {
         int result = -1;
-        for (int i = 0; i < elements.size(); i++) {
-            if (elements.get(i) == anElement) {
+        for (int i = 0; i < filteredElements.size(); i++) {
+            if (filteredElements.get(i) == anElement) {
                 result = i;
                 break;
             }
@@ -322,7 +377,7 @@ public abstract class ElementListBase extends AbstractTableModel {
     }
     
     public int getRowCount() { 
-        return elements.size(); 
+        return filteredElements.size(); 
     }
     
     /**
@@ -339,8 +394,8 @@ public abstract class ElementListBase extends AbstractTableModel {
      */
     public long getSelectedId() {
     	long result = -1;
-    	if (selectedRow >= 0 && selectedRow < elements.size()) {
-    		ElementBase selectedElement = elements.get(selectedRow);
+    	if (selectedRow >= 0 && selectedRow < filteredElements.size()) {
+    		ElementBase selectedElement = filteredElements.get(selectedRow);
     		result = selectedElement.getId();
     	}
     	return result;
@@ -356,8 +411,8 @@ public abstract class ElementListBase extends AbstractTableModel {
     
     public Object getValueAt(int row, int col) {
         Object result = null;
-        if (row < elements.size()) {
-            ElementBase element = elements.get(row);
+        if (row < filteredElements.size()) {
+            ElementBase element = filteredElements.get(row);
             if (element != null) {
                 result = element.getValue(col);
             }
@@ -479,9 +534,33 @@ public abstract class ElementListBase extends AbstractTableModel {
      *        new element
      */
     public void setElement(int anIndex, ElementBase anElement) {
+    	
+    	logger.debug("Method entered [" + type + "]");
+    	
     	if (anElement != null) {
-    		elements.set(anIndex, anElement);
+    		ElementBase removedElement = null;
+    		if (anIndex > 0 && anIndex < filteredElements.size()) {
+    			removedElement = filteredElements.get(anIndex);
+    		}
+    		int allIndex = -1;
+    		if (removedElement != null) {
+    			for (int i = 0; i < allElements.size(); i++) {
+    				ElementBase element = allElements.get(i);
+    				if (element == removedElement) {
+    					allIndex = i;
+    					break;
+    				}
+    			}
+    		}
+    		if (anIndex > 0 && anIndex < filteredElements.size()) {
+    			filteredElements.set(anIndex, anElement);
+    		}
+    		if (allIndex != -1) {
+    			allElements.set(allIndex, anElement);
+    		}
     	}
+    	
+    	logger.debug("Method exited [" + type + "]");
     }
     
     /**
@@ -539,8 +618,8 @@ public abstract class ElementListBase extends AbstractTableModel {
     }
     
     public void setValueAt(Object value, int row, int col) {
-        if (row < elements.size()) {
-            ElementBase element = elements.get(row);
+        if (row < filteredElements.size()) {
+            ElementBase element = filteredElements.get(row);
             if (element != null) {
                 element.setValue(col, value);
             }
@@ -596,7 +675,7 @@ public abstract class ElementListBase extends AbstractTableModel {
     	buffer.append(selectedRow);
     	buffer.append(", elements.size");
     	buffer.append(" = ");
-    	buffer.append(elements.size());
+    	buffer.append(filteredElements.size());
     	buffer.append("]");
     	return buffer.toString();
     }
