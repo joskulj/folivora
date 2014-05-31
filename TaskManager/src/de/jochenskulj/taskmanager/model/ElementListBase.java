@@ -46,6 +46,7 @@ public abstract class ElementListBase extends AbstractTableModel {
     private boolean active = true;
     private boolean fireFlag = true;
     private boolean modifiedFlag = false;
+    private boolean filterFlag = false;
     
     /**
      * creates an instance
@@ -102,6 +103,25 @@ public abstract class ElementListBase extends AbstractTableModel {
     	
     	logger.debug("Method executed [" + type + "]");
 
+    }
+    
+    /**
+     * returns the flag, if the filter panel should be active
+     * @return flag, if the filter panel should be active
+     */
+    public boolean getFilterFlag() {
+    	return filterFlag;
+    }
+    
+    /**
+     * sets the flag, if the filter panel should be active
+     * @param aFlag
+     *        <code>true</code>, if the filter panel should be active;
+     *        otherwise <code>false</code>
+     */
+    public void setFilterFlag(boolean aFlag) {
+    	filterFlag = aFlag;
+    	fireUpdate();
     }
     
     /**
