@@ -21,6 +21,7 @@ import de.jochenskulj.taskmanager.component.DetailTextField;
 import de.jochenskulj.taskmanager.component.TaskReferencePanel;
 import de.jochenskulj.taskmanager.model.ContextElement;
 import de.jochenskulj.taskmanager.model.ElementBase;
+import de.jochenskulj.taskmanager.model.ElementType;
 
 import java.awt.Component;
 
@@ -37,6 +38,7 @@ public class ContextDetailPanel extends DetailPanelBase {
 	
     private DetailTextField context;
     private TaskReferencePanel taskReferences;
+    private ElementType type = new ElementType(ElementType.CONTEXT);
 
     /**
      * creates an instance
@@ -124,4 +126,13 @@ public class ContextDetailPanel extends DetailPanelBase {
     	
     	logger.debug("Method exited");
     }
+    
+	/**
+	 * returns the element type of the panel
+	 * @return element type of the panel
+	 */
+    @Override
+	public ElementType getType() {
+		return type;
+	}
 }

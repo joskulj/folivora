@@ -28,6 +28,7 @@ import org.apache.log4j.Logger;
 import de.jochenskulj.taskmanager.component.DetailTextField;
 import de.jochenskulj.taskmanager.model.ElementBase;
 import de.jochenskulj.taskmanager.model.ElementListBase;
+import de.jochenskulj.taskmanager.model.ElementType;
 import de.jochenskulj.taskmanager.model.PeopleElement;
 
 /**
@@ -41,7 +42,8 @@ public class PeopleDetailPanel extends DetailPanelBase {
 	private DetailTextField lastname;
 	private DetailTextField initials;
 	private JTextArea notes;
-	
+    private ElementType type = new ElementType(ElementType.PEOPLE);
+
     /**
      * creates an instance
      * @param aFrame
@@ -122,4 +124,13 @@ public class PeopleDetailPanel extends DetailPanelBase {
     	
         return anElement;
     }
+
+    /**
+	 * returns the element type of the panel
+	 * @return element type of the panel
+	 */
+    @Override
+	public ElementType getType() {
+		return type;
+	}
 }

@@ -236,6 +236,20 @@ public class ApplicationModel {
     }
     
     /**
+     * returns the list of a given type
+     * @param aType
+     *        a type to request the list
+     * @return list of a given type
+     */
+    public ElementListBase getList(ElementType aType) {
+    	ElementListBase result = null;
+    	if (aType != null) {
+    		result = listTable.get(aType.getLabel());
+    	}
+    	return result;
+    }
+    
+    /**
      * returns the filename of the model
      * @return filename of the model
      */

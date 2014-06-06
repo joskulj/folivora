@@ -17,6 +17,8 @@
  */
 package de.jochenskulj.taskmanager.button;
 
+import de.jochenskulj.taskmanager.ApplicationException;
+import de.jochenskulj.taskmanager.model.ElementListBase;
 import de.jochenskulj.taskmanager.util.IconFactory;
 import de.jochenskulj.taskmanager.view.ApplicationFrame;
 
@@ -25,11 +27,15 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
+import org.apache.log4j.Logger;
+
 /**
  * Button to open or close the filter
  */
 public class FilterButton extends JButton implements ActionListener {
     
+	private static Logger logger = Logger.getRootLogger();
+	
     private ApplicationFrame frame;
     
     /**
@@ -41,6 +47,7 @@ public class FilterButton extends JButton implements ActionListener {
         super();
         frame = aFrame;
         setIcon(IconFactory.createIcon(IconFactory.FILTER));
+        addActionListener(this);
     }
     
     /**
@@ -49,7 +56,13 @@ public class FilterButton extends JButton implements ActionListener {
      *        event to handle
      */
     public void actionPerformed(ActionEvent arg0) {
-        // TODO: implement method
-        System.out.println("FilterButton clicked");
-    }
+    	logger.debug("FilterButton.actionPerformed() entered.");
+
+    	ElementListBase currentList = 
+    				frame.getApplication().getModel().getCurrentList();
+    	boolean flag = currentList.getFilterFlag();
+    	boolean newFlag = !flag;
+    	currentList.setFilterFlag(newFlag);
+
+    	logger.debug("Filter.actionPerformed() exited.");    }
 }

@@ -20,10 +20,9 @@ package de.jochenskulj.taskmanager.view;
 import de.jochenskulj.taskmanager.component.ElementTable;
 import de.jochenskulj.taskmanager.model.ApplicationModel;
 import de.jochenskulj.taskmanager.model.ApplicationModelListener;
-
+import de.jochenskulj.taskmanager.model.ElementType;
 
 import java.awt.Color;
-
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
@@ -35,7 +34,9 @@ import javax.swing.JTable;
  * Panel to display Contexts in a list
  */
 public class ContextListPanel extends ListPanelBase {
-    
+
+	private ElementType type = new ElementType(ElementType.CONTEXT);
+
     /**
      * creates an instance
      * @param aFrame
@@ -44,4 +45,13 @@ public class ContextListPanel extends ListPanelBase {
     public ContextListPanel(ApplicationFrame aFrame) {
         super(aFrame, aFrame.getApplication().getModel().getContextList());
     }
+    
+	/**
+	 * returns the element type of the panel
+	 * @return element type of the panel
+	 */
+    @Override
+	public ElementType getType() {
+		return type;
+	}
 }

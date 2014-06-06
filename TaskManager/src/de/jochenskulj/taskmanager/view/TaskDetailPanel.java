@@ -33,6 +33,7 @@ import de.jochenskulj.taskmanager.component.ProjectCombobox;
 import de.jochenskulj.taskmanager.component.TaskStatusComboBox;
 import de.jochenskulj.taskmanager.model.ApplicationModel;
 import de.jochenskulj.taskmanager.model.ElementBase;
+import de.jochenskulj.taskmanager.model.ElementType;
 import de.jochenskulj.taskmanager.model.ProjectElement;
 import de.jochenskulj.taskmanager.model.TaskElement;
 
@@ -51,6 +52,7 @@ public class TaskDetailPanel extends DetailPanelBase {
 	private JTextArea notes;
 	private ElementSelectionTable contextSelection;
 	private ElementSelectionTable peopleSelection;
+	private ElementType type = new ElementType(ElementType.TASK);
 	
     /**
      * creates an instance
@@ -153,6 +155,15 @@ public class TaskDetailPanel extends DetailPanelBase {
     	
         return result;
     }
+    
+	/**
+	 * returns the element type of the panel
+	 * @return element type of the panel
+	 */
+    @Override
+	public ElementType getType() {
+		return type;
+	}
     
     private DetailChildPanel initNotesPanel() {
     	DetailChildPanel result = new DetailChildPanel(this);

@@ -19,6 +19,8 @@ package de.jochenskulj.taskmanager.view;
 
 import javax.swing.JPanel;
 
+import de.jochenskulj.taskmanager.model.ElementType;
+
 /**
  * Base class for content panels 
  */
@@ -49,5 +51,13 @@ public class ContentPanelBase extends JPanel {
 	 */
 	public boolean getVerticalFill() {
 		return verticalFill;
+	}
+	
+	/**
+	 * returns the element type of the panel
+	 * @return element type of the panel
+	 */
+	public ElementType getType() {
+		return null;
 	}
 }

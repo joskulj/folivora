@@ -23,6 +23,7 @@ import de.jochenskulj.taskmanager.component.PriorityCombobox;
 import de.jochenskulj.taskmanager.component.TaskReferencePanel;
 import de.jochenskulj.taskmanager.model.ElementBase;
 import de.jochenskulj.taskmanager.model.ElementListBase;
+import de.jochenskulj.taskmanager.model.ElementType;
 import de.jochenskulj.taskmanager.model.ProjectElement;
 
 import javax.swing.JLabel;
@@ -41,6 +42,7 @@ public class ProjectDetailPanel extends DetailPanelBase {
     private JTextField name;
     private PriorityCombobox priority;
     private TaskReferencePanel taskReferences;
+    private ElementType type = new ElementType(ElementType.PROJECT);
 
     /**
      * creates an instance

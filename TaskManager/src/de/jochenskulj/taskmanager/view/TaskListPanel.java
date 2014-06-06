@@ -19,6 +19,7 @@ package de.jochenskulj.taskmanager.view;
 
 import de.jochenskulj.taskmanager.model.ApplicationModel;
 import de.jochenskulj.taskmanager.model.ApplicationModelListener;
+import de.jochenskulj.taskmanager.model.ElementType;
 
 import java.awt.Color;
 
@@ -29,6 +30,8 @@ import javax.swing.JPanel;
  */
 public class TaskListPanel extends ListPanelBase {
     
+	private ElementType type = new ElementType(ElementType.TASK);
+	
     /**
      * creates an instance
      * @param aFrame
@@ -37,4 +40,13 @@ public class TaskListPanel extends ListPanelBase {
     public TaskListPanel(ApplicationFrame aFrame) {
         super(aFrame, aFrame.getApplication().getModel().getTaskList());
     }
+    
+	/**
+	 * returns the element type of the panel
+	 * @return element type of the panel
+	 */
+    @Override
+	public ElementType getType() {
+		return type;
+	}
 }

@@ -28,6 +28,8 @@ import de.jochenskulj.taskmanager.button.PreviousButton;
 import de.jochenskulj.taskmanager.component.GridBagPanel;
 import de.jochenskulj.taskmanager.component.StatusLabel;
 import de.jochenskulj.taskmanager.component.TypeChooserPanel;
+import de.jochenskulj.taskmanager.filter.FilterPanelBase;
+import de.jochenskulj.taskmanager.filter.TaskFilterPanel;
 import de.jochenskulj.taskmanager.menu.ApplicationMenuBar;
 import de.jochenskulj.taskmanager.model.ApplicationModel;
 import de.jochenskulj.taskmanager.model.ApplicationModelListener;
@@ -66,9 +68,10 @@ public class ApplicationFrame implements ApplicationModelListener {
     private ContentPanelBase contentPanel;
     private ContentPanelBase defaultPanel;
     private DetailPanelBase currentDetailPanel;
+    private FilterPanelBase currentFilterPanel;
     private Hashtable<String, ContentPanelBase> listPanels;
     private Hashtable<String, DetailPanelBase> detailPanels;
-    private Hashtable<String, JPanel> filterPanels;
+    private Hashtable<String, FilterPanelBase> filterPanels;
     private FilterButton filterButton;
     private ModeButton modeButton;
     private ApplicationMenuBar menuBar;
@@ -193,22 +196,66 @@ public class ApplicationFrame implements ApplicationModelListener {
     public void setContentPanel(ContentPanelBase aPanel) {
     	
     	logger.debug("Method entered");
-    	logger.debug("aPanel " + aPanel.getClass().getName());
+    	logger.debug("aPanel = " + aPanel.getClass().getName());
     	
-    	if (aPanel == currentDetailPanel) {
+    	// check, if the filter panel has to be changed
+    	boolean changeFilter = false;
+    	boolean filterActive = false;
+    	FilterPanelBase newFilterPanel = null;
+    	
+    	ElementListBase panelList = 
+    			application.getModel().getList(aPanel.getType());
+    	logger.debug("panelList = " + panelList);
+    	if (panelList != null) {
+    		filterActive  = panelList.getFilterFlag();
+    		if (filterActive == true) {
+    			newFilterPanel = filterPanels.get(aPanel.getType().getLabel());
+    			logger.debug("currentFilterPanel = " + currentFilterPanel);
+    			logger.debug("newFilterPanel = " + newFilterPanel);
+    			if (newFilterPanel != currentFilterPanel) {
+    				changeFilter = true;
+    			}
+    		} else {
+    			if (currentFilterPanel != null) {
+    				changeFilter = true;
+    				currentFilterPanel = null;
+    			}
+    		}
+    	}
+    	logger.debug("changeFilter = " + changeFilter);
+    	logger.debug("filterActive = " + filterActive);
+    	
+    	if (aPanel == currentDetailPanel && changeFilter == false) {
     		// content panel already active; leave method
     		return;
     	}
-        // save the values of detail panels
+        
+    	// save the values of detail panels
     	if (currentDetailPanel != null) {
     		currentDetailPanel.saveCurrentRow();
     	}
         // remove the existing panel
-        contentPanel.removeAll();
+    	contentPanel.removeAll();
+    	
+        GridBagConstraints c = null;
+        int gridDeltaY = 0;
+        
+        // show filter panel
+        if (filterActive == true) {
+        	c = new GridBagConstraints();
+        	c.gridx = 0;
+            c.gridy = 0;
+            c.weightx = 1;
+            c.fill = GridBagConstraints.HORIZONTAL;
+            contentPanel.add(newFilterPanel, c);
+            currentFilterPanel = newFilterPanel;
+            gridDeltaY = 1;
+        }
+
         // add the new panel
-        GridBagConstraints c = new GridBagConstraints();
+        c = new GridBagConstraints();
         c.gridx = 0;
-        c.gridy = 0;
+        c.gridy = 0 + gridDeltaY;
         c.weightx = 1;
         if (aPanel.getVerticalFill()) {
             c.fill = GridBagConstraints.BOTH;
@@ -224,7 +271,7 @@ public class ApplicationFrame implements ApplicationModelListener {
             // insert dummy panel for top alignment of Detail panels
             c = new GridBagConstraints();
             c.gridx = 0;
-            c.gridy = 1;
+            c.gridy = 1 + gridDeltaY;
             c.weightx = 1;
             c.weighty = 1;
             c.fill = GridBagConstraints.BOTH;
@@ -255,6 +302,7 @@ public class ApplicationFrame implements ApplicationModelListener {
      *        exception to display
      */
     public void showException(ApplicationException anException) {
+    	anException.printStackTrace();
     	JOptionPane.showMessageDialog(frame,
     		    anException.getMessage(),
     		    "Application Error",
@@ -411,10 +459,12 @@ public class ApplicationFrame implements ApplicationModelListener {
     protected void initContentPanels() {
         listPanels = new Hashtable<String, ContentPanelBase>();
         detailPanels = new Hashtable<String, DetailPanelBase>();
+        filterPanels = new Hashtable<String, FilterPanelBase>();
         for (ElementType type : application.getModel().getElementTypes()) {
             String label = type.getLabel();
             ContentPanelBase listPanel = null;
             DetailPanelBase detailPanel = null;
+            FilterPanelBase filterPanel = null;
             if (label.equals(ElementType.CONTEXT)) {
                 listPanel = new ContextListPanel(this);
                 detailPanel = new ContextDetailPanel(this);
@@ -430,9 +480,13 @@ public class ApplicationFrame implements ApplicationModelListener {
             if (label.equals(ElementType.TASK)) {
                 listPanel = new TaskListPanel(this);
                 detailPanel = new TaskDetailPanel(this);
+                filterPanel = new TaskFilterPanel(application.getModel());
             }
             listPanels.put(label, listPanel);
             detailPanels.put(label, detailPanel);
+            if (filterPanel != null) {
+            	filterPanels.put(label, filterPanel);
+            }
         }
         defaultPanel = new ContentPanelBase();
         defaultPanel.setBackground(Color.LIGHT_GRAY);

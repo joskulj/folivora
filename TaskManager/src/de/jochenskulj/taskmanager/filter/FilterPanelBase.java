@@ -61,13 +61,13 @@ public abstract class FilterPanelBase extends GridBagPanel {
         c.insets = new Insets(5, 5, 5, 5);
         buttonPanel.add(applyButton, c);
         c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 1;
+        c.gridx = 1;
+        c.gridy = 0;
         c.insets = new Insets(5, 5, 5, 5);
         buttonPanel.add(clearButton, c);
         c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 2;
+        c.gridx = 2;
+        c.gridy = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 1;
         c.insets = new Insets(5, 5, 5, 5);
