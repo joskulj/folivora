@@ -17,6 +17,12 @@
  */
 package de.jochenskulj.taskmanager.filter;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
+import javax.swing.JPanel;
+
 import de.jochenskulj.taskmanager.component.GridBagPanel;
 import de.jochenskulj.taskmanager.model.ApplicationModel;
 
@@ -25,17 +31,6 @@ import de.jochenskulj.taskmanager.model.ApplicationModel;
  */
 public abstract class FilterPanelBase extends GridBagPanel {
 
-	private ApplicationModel model;
-	
-	/**
-	 * creates an instance
-	 * @param aModel
-	 *        model to apply the filter
-	 */
-	public FilterPanelBase(ApplicationModel aModel) {
-		model = aModel;
-	}
-	
 	/**
 	 * applies the filter
 	 */
@@ -45,4 +40,39 @@ public abstract class FilterPanelBase extends GridBagPanel {
 	 * clears the filter
 	 */
 	public abstract void clearFilter();
+	
+	/**
+	 * creates the panel for filter buttons
+	 * @return panel for filter buttons
+	 */
+	public JPanel createButtonPanel() {
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new GridBagLayout());
+		
+		FilterPanelButton applyButton = new FilterPanelButton(this,
+				FilterPanelButton.MODE_APPLY_FILTER);
+		FilterPanelButton clearButton = new FilterPanelButton(this,
+				FilterPanelButton.MODE_CLEAR_FILTER);
+		JPanel spacePanel = new JPanel();
+		
+		GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.insets = new Insets(5, 5, 5, 5);
+        buttonPanel.add(applyButton, c);
+        c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 1;
+        c.insets = new Insets(5, 5, 5, 5);
+        buttonPanel.add(clearButton, c);
+        c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 2;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+        c.insets = new Insets(5, 5, 5, 5);
+        buttonPanel.add(spacePanel, c);
+		
+		return buttonPanel;
+	}
 }
