@@ -22,11 +22,15 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
+import org.apache.log4j.Logger;
+
 /**
  * Class for buttons within the filter panel
  */
 public class FilterPanelButton extends JButton implements ActionListener {
 
+	private static Logger logger = Logger.getRootLogger();
+	
 	public static final int MODE_APPLY_FILTER = 0;
 	public static final int MODE_CLEAR_FILTER = 1;
 	
@@ -48,6 +52,7 @@ public class FilterPanelButton extends JButton implements ActionListener {
 		if (mode == MODE_CLEAR_FILTER) {
 			setText("Clear");
 		}
+		addActionListener(this);
 	}
 	
     /**
@@ -56,11 +61,22 @@ public class FilterPanelButton extends JButton implements ActionListener {
      *        event to handle
      */
     public void actionPerformed(ActionEvent arg0) {
+    	
+    	logger.debug("Method entered [" + mode + "]");
+    	
 		if (mode == MODE_APPLY_FILTER) {
+			
+			logger.debug("parentPanel.applyFilter()");
+			
 			parentPanel.applyFilter();
 		}
 		if (mode == MODE_CLEAR_FILTER) {
+			
+			logger.debug("parentPanel.clearFilter()");
+			
 			parentPanel.clearFilter();
 		}
+		
+		logger.debug("Method exited [" + mode + "]");
     }
 }

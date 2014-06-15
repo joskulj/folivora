@@ -17,10 +17,13 @@
  */
 package de.jochenskulj.taskmanager.filter;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import de.jochenskulj.taskmanager.component.GridBagPanel;
@@ -31,6 +34,11 @@ import de.jochenskulj.taskmanager.model.ApplicationModel;
  */
 public abstract class FilterPanelBase extends GridBagPanel {
 
+	public FilterPanelBase() {
+		setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+		setBackground(Color.LIGHT_GRAY);
+	}
+	
 	/**
 	 * applies the filter
 	 */
@@ -47,6 +55,7 @@ public abstract class FilterPanelBase extends GridBagPanel {
 	 */
 	public JPanel createButtonPanel() {
 		JPanel buttonPanel = new JPanel();
+		buttonPanel.setBackground(Color.LIGHT_GRAY);
 		buttonPanel.setLayout(new GridBagLayout());
 		
 		FilterPanelButton applyButton = new FilterPanelButton(this,
@@ -54,6 +63,7 @@ public abstract class FilterPanelBase extends GridBagPanel {
 		FilterPanelButton clearButton = new FilterPanelButton(this,
 				FilterPanelButton.MODE_CLEAR_FILTER);
 		JPanel spacePanel = new JPanel();
+		spacePanel.setBackground(Color.LIGHT_GRAY);
 		
 		GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;

@@ -205,6 +205,22 @@ public abstract class ElementBase {
     	list = aList;
     }
     
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		boolean result = false;
+		if (obj instanceof ElementBase) {
+			ElementBase otherElement = (ElementBase) obj;
+			if (id != -1 && otherElement.id != -1) {
+				result = (id == otherElement.id);
+			}
+		}
+		return result;
+	}
+
+    
     /**
      * sets the value object at a given index
      * @param anIndex

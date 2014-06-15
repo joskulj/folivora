@@ -17,17 +17,26 @@
  */
 package de.jochenskulj.taskmanager.filter;
 
+import java.awt.Color;
+
 import javax.swing.JPanel;
+
+import org.apache.log4j.Logger;
 
 import de.jochenskulj.taskmanager.component.ProjectCombobox;
 import de.jochenskulj.taskmanager.component.TaskStatusComboBox;
 import de.jochenskulj.taskmanager.model.ApplicationModel;
+import de.jochenskulj.taskmanager.model.ProjectElement;
+import de.jochenskulj.taskmanager.model.TaskElementFilter;
+import de.jochenskulj.taskmanager.model.TaskStatus;
 
 /**
  * Panel to filter task elements 
  */
 public class TaskFilterPanel extends FilterPanelBase {
 
+	private static Logger logger = Logger.getRootLogger();
+	
 	private ApplicationModel model;
 	private ProjectCombobox project;
 	private TaskStatusComboBox taskStatus;
@@ -48,6 +57,21 @@ public class TaskFilterPanel extends FilterPanelBase {
 	@Override
 	public void applyFilter() {
 		
+		logger.debug("Method entered");
+		
+		TaskElementFilter filter = new TaskElementFilter();
+		ProjectElement projectFilter = 
+				(ProjectElement) project.getSelectedItem();
+		if (projectFilter != null) {
+			filter.setProject(projectFilter);
+		}
+		String statusLabel = (String) taskStatus.getSelectedItem();
+		if (statusLabel != null) {
+			filter.setStatus(new TaskStatus(statusLabel));
+		}
+		model.getTaskList().setFilter(filter);
+		
+		logger.debug("Method exited");
 	}
 	
 	/**
@@ -55,7 +79,7 @@ public class TaskFilterPanel extends FilterPanelBase {
 	 */
 	@Override
 	public void clearFilter() {
-		
+		model.getTaskList().clearFilter();
 	}
 
 	/**
