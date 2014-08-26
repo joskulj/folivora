@@ -120,6 +120,9 @@ public abstract class ElementListBase extends AbstractTableModel {
      *        otherwise <code>false</code>
      */
     public void setFilterFlag(boolean aFlag) {
+    	if (filterFlag == true && aFlag == false) {
+    		clearFilter();
+    	}
     	filterFlag = aFlag;
     	fireUpdate();
     }
@@ -183,6 +186,7 @@ public abstract class ElementListBase extends AbstractTableModel {
     			filteredElements.add(element);
     		}
     	}
+    	setSelectedRow(0);
     	fireUpdate();
     	
     	logger.debug("Method exited [" + type + "]");
@@ -197,6 +201,7 @@ public abstract class ElementListBase extends AbstractTableModel {
 
     	filteredElements.removeAll(filteredElements);
     	filteredElements.addAll(allElements);
+    	setSelectedRow(0);
     	fireUpdate();
     	
     	logger.debug("Method exited [" + type + "]");

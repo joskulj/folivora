@@ -21,6 +21,8 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -34,55 +36,15 @@ import de.jochenskulj.taskmanager.model.ApplicationModel;
  */
 public abstract class FilterPanelBase extends GridBagPanel {
 
+	/**
+	 * creates instance
+	 */
 	public FilterPanelBase() {
 		setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 		setBackground(Color.LIGHT_GRAY);
 	}
-	
-	/**
-	 * applies the filter
-	 */
-	public abstract void applyFilter();
-	
-	/**
-	 * clears the filter
-	 */
-	public abstract void clearFilter();
-	
-	/**
-	 * creates the panel for filter buttons
-	 * @return panel for filter buttons
-	 */
-	public JPanel createButtonPanel() {
-		JPanel buttonPanel = new JPanel();
-		buttonPanel.setBackground(Color.LIGHT_GRAY);
-		buttonPanel.setLayout(new GridBagLayout());
 		
-		FilterPanelButton applyButton = new FilterPanelButton(this,
-				FilterPanelButton.MODE_APPLY_FILTER);
-		FilterPanelButton clearButton = new FilterPanelButton(this,
-				FilterPanelButton.MODE_CLEAR_FILTER);
-		JPanel spacePanel = new JPanel();
-		spacePanel.setBackground(Color.LIGHT_GRAY);
-		
-		GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 0;
-        c.insets = new Insets(5, 5, 5, 5);
-        buttonPanel.add(applyButton, c);
-        c = new GridBagConstraints();
-        c.gridx = 1;
-        c.gridy = 0;
-        c.insets = new Insets(5, 5, 5, 5);
-        buttonPanel.add(clearButton, c);
-        c = new GridBagConstraints();
-        c.gridx = 2;
-        c.gridy = 0;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 1;
-        c.insets = new Insets(5, 5, 5, 5);
-        buttonPanel.add(spacePanel, c);
-		
-		return buttonPanel;
+	public void refreshPanel() {
+
 	}
 }

@@ -51,47 +51,15 @@ public class TaskFilterPanel extends FilterPanelBase {
 		initElements();
 	}
 	
-	/**
-	 * applies the filter
-	 */
-	@Override
-	public void applyFilter() {
-		
-		logger.debug("Method entered");
-		
-		TaskElementFilter filter = new TaskElementFilter();
-		ProjectElement projectFilter = 
-				(ProjectElement) project.getSelectedItem();
-		if (projectFilter != null) {
-			filter.setProject(projectFilter);
-		}
-		String statusLabel = (String) taskStatus.getSelectedItem();
-		if (statusLabel != null) {
-			filter.setStatus(new TaskStatus(statusLabel));
-		}
-		model.getTaskList().setFilter(filter);
-		
-		logger.debug("Method exited");
-	}
 	
-	/**
-	 * clears the filter
-	 */
-	@Override
-	public void clearFilter() {
-		model.getTaskList().clearFilter();
-	}
-
 	/**
 	 * initializes the elements
 	 */
 	protected void initElements() {
 		project = new ProjectCombobox(model);
 		taskStatus = new TaskStatusComboBox();
-		JPanel buttonPanel = createButtonPanel();
 		
 		addComponent("Project:", project);
 		addComponent("Status:", taskStatus);
-		addComponent(buttonPanel);
 	}
 }

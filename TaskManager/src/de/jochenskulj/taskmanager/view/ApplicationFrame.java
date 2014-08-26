@@ -285,6 +285,11 @@ public class ApplicationFrame implements ApplicationModelListener {
         }
         aPanel.updateUI();
         
+        if (currentFilterPanel != null) {
+        	//currentFilterPanel.refreshPanel();
+        	//currentFilterPanel.updateUI();
+        }
+        
     	logger.debug("Method exited");
     }
     

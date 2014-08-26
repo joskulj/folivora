@@ -28,12 +28,22 @@ import de.jochenskulj.taskmanager.model.TaskStatus;
 public class TaskStatusComboBox extends JComboBox {
 
 	public static String[] VALUES = TaskStatus.VALID_VALUES;
+	public static String EMPTY_STRING = "";
 	
 	/**
      * creates an instance
      */
     public TaskStatusComboBox() {
-        super(VALUES);
+    	initItems(false);
+    }
+    
+    /**
+     * creates an instance
+     * @param emptyFlag
+     *        flag, if an empty selection should be allowed
+     */
+    public TaskStatusComboBox(boolean emptyFlag) {
+    	initItems(emptyFlag);
     }
     
     /**
@@ -59,10 +69,12 @@ public class TaskStatusComboBox extends JComboBox {
      */
     public TaskStatus getValue() {
     	TaskStatus result = null;
-        int index = getSelectedIndex();
-        if (index != -1) {
-            result = new TaskStatus(VALUES[index]);
-        }
+		String statusLabel = (String) getSelectedItem();
+		if (statusLabel != null) {
+			if (statusLabel.equals(EMPTY_STRING) == false) {
+				result = new TaskStatus(statusLabel);
+			}
+		}
         return result;
     }
     
@@ -74,5 +86,20 @@ public class TaskStatusComboBox extends JComboBox {
     public void setValue(TaskStatus aStatus) {
         int index = getIndex(aStatus.getValue());
         setSelectedIndex(index);
+    }
+    
+    /**
+     * initializes the items to select
+     * @param emptyFlag
+     *        flag, if an empty selection should be allowed
+     */
+    protected void initItems(boolean emptyFlag) {
+    	if (emptyFlag) {
+    		addItem(EMPTY_STRING);
+    	}
+    	for (String item : VALUES) {
+    		addItem(item);
+    	}
+    	
     }
 }

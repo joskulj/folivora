@@ -18,7 +18,9 @@
 package de.jochenskulj.taskmanager.button;
 
 import de.jochenskulj.taskmanager.ApplicationException;
+import de.jochenskulj.taskmanager.filter.TaskFilterDialog;
 import de.jochenskulj.taskmanager.model.ElementListBase;
+import de.jochenskulj.taskmanager.model.ElementType;
 import de.jochenskulj.taskmanager.util.IconFactory;
 import de.jochenskulj.taskmanager.view.ApplicationFrame;
 
@@ -26,6 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 
 import org.apache.log4j.Logger;
 
@@ -60,9 +63,13 @@ public class FilterButton extends JButton implements ActionListener {
 
     	ElementListBase currentList = 
     				frame.getApplication().getModel().getCurrentList();
-    	boolean flag = currentList.getFilterFlag();
-    	boolean newFlag = !flag;
-    	currentList.setFilterFlag(newFlag);
-
+    	JDialog filterDialog = null;
+    	if (currentList.getType().equals(ElementType.TASK)) {
+    		filterDialog = new TaskFilterDialog(frame.getFrame(), currentList);
+    	}
+    	if (filterDialog != null) {
+    		filterDialog.setVisible(true);
+    	}
+    
     	logger.debug("Filter.actionPerformed() exited.");    }
 }

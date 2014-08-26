@@ -17,7 +17,6 @@
  */
 package de.jochenskulj.taskmanager.filter;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
@@ -27,7 +26,7 @@ import org.apache.log4j.Logger;
 /**
  * Class for buttons within the filter panel
  */
-public class FilterPanelButton extends JButton implements ActionListener {
+public class FilterPanelButton {
 
 	private static Logger logger = Logger.getRootLogger();
 	
@@ -46,13 +45,6 @@ public class FilterPanelButton extends JButton implements ActionListener {
 	public FilterPanelButton(FilterPanelBase aPanel, int aMode) {
 		parentPanel = aPanel;
 		mode = aMode;
-		if (mode == MODE_APPLY_FILTER) {
-			setText("Apply");
-		}
-		if (mode == MODE_CLEAR_FILTER) {
-			setText("Clear");
-		}
-		addActionListener(this);
 	}
 	
     /**
@@ -60,7 +52,7 @@ public class FilterPanelButton extends JButton implements ActionListener {
      * @param arg0
      *        event to handle
      */
-    public void actionPerformed(ActionEvent arg0) {
+    public void actionPerformed() {
     	
     	logger.debug("Method entered [" + mode + "]");
     	
@@ -68,13 +60,12 @@ public class FilterPanelButton extends JButton implements ActionListener {
 			
 			logger.debug("parentPanel.applyFilter()");
 			
-			parentPanel.applyFilter();
 		}
 		if (mode == MODE_CLEAR_FILTER) {
 			
 			logger.debug("parentPanel.clearFilter()");
 			
-			parentPanel.clearFilter();
+			
 		}
 		
 		logger.debug("Method exited [" + mode + "]");
